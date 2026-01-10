@@ -1,0 +1,15 @@
+/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender/obj/Debug/net10.0/URLShortender.GeneratedMSBuildEditorConfig.editorconfig
+/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender/obj/Debug/net10.0/URLShortender.AssemblyInfoInputs.cache
+/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender/obj/Debug/net10.0/URLShortender.AssemblyInfo.cs
+/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender/obj/Debug/net10.0/URLShortender.csproj.CoreCompileInputs.cache
+/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender/obj/Debug/net10.0/URLShortender.sourcelink.json
+/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender/bin/Debug/net10.0/URLShortender
+/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender/bin/Debug/net10.0/URLShortender.deps.json
+/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender/bin/Debug/net10.0/URLShortender.runtimeconfig.json
+/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender/bin/Debug/net10.0/URLShortender.dll
+/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender/bin/Debug/net10.0/URLShortender.pdb
+/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender/obj/Debug/net10.0/URLShortender.dll
+/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender/obj/Debug/net10.0/refint/URLShortender.dll
+/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender/obj/Debug/net10.0/URLShortender.pdb
+/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender/obj/Debug/net10.0/URLShortender.genruntimeconfig.cache
+/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender/obj/Debug/net10.0/ref/URLShortender.dll
