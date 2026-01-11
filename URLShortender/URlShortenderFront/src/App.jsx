@@ -12,7 +12,6 @@ function App() {
   const [stats, setStats] = useState(null);
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
-  const [lifetimeHours, setLifetimeHours] = useState(24);
   const [authTab, setAuthTab] = useState("login");
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState("");
@@ -149,20 +148,7 @@ function App() {
             placeholder="Wklej URL do skrócenia"
             error={error}
             buttonText="Skróć link"
-          >
-            <label className="field">
-              <span>Czas życia linku</span>
-              <select
-                className="select-field"
-                value={lifetimeHours}
-                onChange={(e) => setLifetimeHours(Number(e.target.value))}
-              >
-                <option value={24}>1 dzień</option>
-                <option value={48}>2 dni</option>
-                <option value={72}>3 dni</option>
-              </select>
-            </label>
-          </TextSubmit>
+          />
           <ShortResult data={result} />
 
           <TextSubmit
