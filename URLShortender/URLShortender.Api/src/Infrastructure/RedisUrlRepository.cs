@@ -29,6 +29,11 @@ public class RedisUrlRepository
         return url.HasValue ? url.ToString() : null;
     }
 
+    public Task<bool> UrlExistsAsync(string Code)
+    {
+        return _dataBase.KeyExistsAsync(UrlKey(Code));
+    }
+
     public Task<long> IncrementClicksAsync(string Code)
     {
         return _dataBase.StringIncrementAsync(ClickKey(Code));

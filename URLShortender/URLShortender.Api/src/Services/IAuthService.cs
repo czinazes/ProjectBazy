@@ -6,6 +6,8 @@ public interface IAuthService
 {
     Task<AuthResult> RegisterAsync(RegisterRequest request);
     Task<AuthResult> LoginAsync(LoginRequest request);
+    Task<UserRecord?> GetUserByTokenAsync(string token);
+    Task<AuthResult> UpdateProfileAsync(string token, UpdateProfileRequest request);
 }
 
 public class AuthResult
