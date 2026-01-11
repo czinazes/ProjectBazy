@@ -18,8 +18,8 @@ public class RedisUrlRepository
         var expiration = ttl.HasValue ? new Expiration(ttl.Value) : Expiration.Persistent;
         var tasks = new Task[]
         {
-            _dataBase.StringSetAsync(UrlKey(Code), Url, expiration),
-            _dataBase.StringSetAsync(ClickKey(Code), 0, expiration)
+            _dataBase.StringSetAsync(UrlKey(Code), Url, ttl),
+            _dataBase.StringSetAsync(ClickKey(Code), 0, ttl)
         };
         return Task.WhenAll(tasks);
     }

@@ -28,7 +28,7 @@ public class UserRepository
             return null;
         }
 
-        return JsonSerializer.Deserialize<UserRecord>(user!.ToString(), SerializerOptions);
+        return JsonSerializer.Deserialize<UserRecord>(user!, SerializerOptions);
     }
 
     public Task SaveUserAsync(UserRecord user)
