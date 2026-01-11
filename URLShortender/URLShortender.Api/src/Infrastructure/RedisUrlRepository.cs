@@ -13,14 +13,14 @@ public class RedisUrlRepository
     private static string UrlKey(string Code) => $"url:{Code}";
     private static string ClickKey(string Code) => $"clicks:{Code}";
 
-    public Task SaveUrlAsync(string Code, string Url, TimeSpan? ttl)
+    public Task SaveUrlAsync(string code, string url, TimeSpan? ttl)
     {
-        var tasks = new Task[]
-        {
-            _dataBase.StringSetAsync(UrlKey(Code), Url, expiry: ttl),
-            _dataBase.StringSetAsync(ClickKey(Code), 0, expiry: ttl)
-        };
-        return Task.WhenAll(tasks);
+        Expiration expiry = ttl.HasValue ? new Expiration(ttl.Value) : default;
+
+        return Task.WhenAll(
+            _dataBase.StringSetAsync(UrlKey(code), url, expiry: expiry),
+            _dataBase.StringSetAsync(ClickKey(code), 0, expiry: expiry)
+        );
     }
 
     public async Task<string?> GetUrlAsync(string Code)

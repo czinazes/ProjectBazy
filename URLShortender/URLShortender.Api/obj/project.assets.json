@@ -860,11 +860,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender.Api/URLShortender.Api.csproj",
+      "projectUniqueName": "/Users/czinazes/Desktop/ProjectBazy/URLShortender/URLShortender.Api/URLShortender.Api.csproj",
       "projectName": "URLShortender.Api",
-      "projectPath": "/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender.Api/URLShortender.Api.csproj",
+      "projectPath": "/Users/czinazes/Desktop/ProjectBazy/URLShortender/URLShortender.Api/URLShortender.Api.csproj",
       "packagesPath": "/Users/czinazes/.nuget/packages/",
-      "outputPath": "/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender.Api/obj/",
+      "outputPath": "/Users/czinazes/Desktop/ProjectBazy/URLShortender/URLShortender.Api/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/czinazes/.nuget/NuGet/NuGet.Config"
