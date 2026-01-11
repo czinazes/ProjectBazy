@@ -18,7 +18,9 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(serviceProvider =>
     });
 
 builder.Services.AddSingleton<RedisUrlRepository>();
+builder.Services.AddSingleton<UserRepository>();
 builder.Services.AddScoped<IURLService,URLService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); 
@@ -59,7 +61,13 @@ app.MapPost("/api/shortender", async (
         return Results.BadRequest(new { error = "Url is invalid" });
     }
 
-    var code = await urlService.CreateShortCodeAsync(request.Url);
+    var lifetimeHours = request.LifetimeHours ?? 24;
+    if (lifetimeHours < 1 || lifetimeHours > 72)
+    {
+        return Results.BadRequest(new { error = "Lifetime must be between 1 and 72 hours" });
+    }
+
+    var code = await urlService.CreateShortCodeAsync(request.Url, lifetimeHours);
     var baseUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}";
     var shortUrl = $"{baseUrl}/{code}";
 
@@ -96,6 +104,28 @@ app.MapGet("/api/stats/{code}", async (string code, IURLService urlService) =>
         originalUrl = url,
         clicks
     });
+});
+
+app.MapPost("/api/auth/register", async (RegisterRequest request, IAuthService authService) =>
+{
+    var result = await authService.RegisterAsync(request);
+    if (!result.Success)
+    {
+        return Results.BadRequest(new { error = result.Error });
+    }
+
+    return Results.Ok(result.Response);
+});
+
+app.MapPost("/api/auth/login", async (LoginRequest request, IAuthService authService) =>
+{
+    var result = await authService.LoginAsync(request);
+    if (!result.Success)
+    {
+        return Results.BadRequest(new { error = result.Error });
+    }
+
+    return Results.Ok(result.Response);
 });
     
 app.Run();
