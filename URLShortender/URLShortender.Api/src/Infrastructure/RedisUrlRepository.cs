@@ -13,12 +13,12 @@ public class RedisUrlRepository
     private static string UrlKey(string Code) => $"url:{Code}";
     private static string ClickKey(string Code) => $"clicks:{Code}";
 
-    public Task SaveUrlAsync(string Code, string Url)
+    public Task SaveUrlAsync(string Code, string Url, TimeSpan? ttl)
     {
         var tasks = new Task[]
         {
-            _dataBase.StringSetAsync(UrlKey(Code), Url),
-            _dataBase.StringSetAsync(ClickKey(Code), 0)
+            _dataBase.StringSetAsync(UrlKey(Code), Url, expiry: ttl),
+            _dataBase.StringSetAsync(ClickKey(Code), 0, expiry: ttl)
         };
         return Task.WhenAll(tasks);
     }
@@ -27,6 +27,11 @@ public class RedisUrlRepository
     {
         var url = await _dataBase.StringGetAsync(UrlKey(Code));
         return url.HasValue ? url.ToString() : null;
+    }
+
+    public Task<bool> UrlExistsAsync(string Code)
+    {
+        return _dataBase.KeyExistsAsync(UrlKey(Code));
     }
 
     public Task<long> IncrementClicksAsync(string Code)

@@ -1,74 +1,47 @@
-import { useState } from "react";
-import { GetStats, ShortenUrl } from "./api";
-import TextSubmit from "./components/TextSubmit";
-import ShortResult from "./components/ShortResult";
-import StatsResult from "./components/StatsResult";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
+import Layout from "./components/Layout";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import LoginPage from "./pages/LoginPage";
+import ProfilePage from "./pages/ProfilePage";
+import RegisterPage from "./pages/RegisterPage";
+import ShortenerPage from "./pages/ShortenerPage";
+
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div className="loading-state">Ładowanie...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
 
 function App() {
-  const [url, setUrl] = useState("");
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [stats, setStats] = useState(null);
-  const [code, setCode] = useState("");
-  const [error, setError] = useState("");
-
-  const handleShorten = async (e) => {
-    e.preventDefault();
-    setError("");
-    setResult(null);
-
-    if (!url.trim()) {
-      setError("Wpisz URL");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const data = await ShortenUrl(url.trim());
-      setResult(data);
-      setUrl("");
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleStats = async (e) => {
-    e.preventDefault();
-    setError("");
-    setStats(null);
-
-    if (!code.trim()) {
-      setError("Wpisz Code");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const data = await GetStats(code.trim());
-      setStats(data);
-      setCode("");
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="app">
-      <h1 className="title">URL Shortener</h1>
-
-      <TextSubmit label="Shorten URL" value={url} onChange={setUrl} onSubmit={handleShorten} loading={loading} 
-        placeholder="Paste URL" error={error}/>
-      <ShortResult data={result}/>
-
-      <TextSubmit label="Get stats" value={code} onChange={setCode} onSubmit={handleStats} loading={loading} 
-        placeholder="Enter code" error={error}/>
-      <StatsResult data={stats} />
-    </div>
+    <AuthProvider>
+      <BrowserRouter>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<ShortenerPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
