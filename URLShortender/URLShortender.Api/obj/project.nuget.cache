@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "akn5qVfcKzI=",
+  "dgSpecHash": "ReNc6drhjeo=",
   "success": true,
-  "projectFilePath": "/Users/czinazes/Desktop/projekt-zaliczeniowy-czinazes-1/URLShortender/URLShortender.Api/URLShortender.Api.csproj",
+  "projectFilePath": "/Users/czinazes/Desktop/ProjectBazy/URLShortender/URLShortender.Api/URLShortender.Api.csproj",
   "expectedPackageFiles": [
     "/Users/czinazes/.nuget/packages/microsoft.extensions.apidescription.server/10.0.0/microsoft.extensions.apidescription.server.10.0.0.nupkg.sha512",
     "/Users/czinazes/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.0/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
