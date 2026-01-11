@@ -39,7 +39,7 @@ function App() {
 
     setLoading(true);
     try {
-      const data = await ShortenUrl(url.trim());
+      const data = await ShortenUrl(url.trim(), lifetimeHours);
       setResult(data);
       setUrl("");
     } catch (err) {

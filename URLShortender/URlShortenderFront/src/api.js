@@ -1,13 +1,13 @@
 const API_BASE_URL="http://localhost:5000"
 
-export async function ShortenUrl(url){
+export async function ShortenUrl(url, lifetimeHours){
     const response = await fetch(`${API_BASE_URL}/api/shortender`, {
         method: "POST",
         headers: {
         "Content-Type": "application/json",
         "accept": "*/*"
         },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url, lifetimeHours }),
     });
     if(!response.ok){
         const data = await response.json().catch(() => ({}))

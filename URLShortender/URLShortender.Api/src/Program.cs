@@ -61,7 +61,13 @@ app.MapPost("/api/shortender", async (
         return Results.BadRequest(new { error = "Url is invalid" });
     }
 
-    var code = await urlService.CreateShortCodeAsync(request.Url);
+    var lifetimeHours = request.LifetimeHours ?? 24;
+    if (lifetimeHours < 1 || lifetimeHours > 72)
+    {
+        return Results.BadRequest(new { error = "Lifetime must be between 1 and 72 hours" });
+    }
+
+    var code = await urlService.CreateShortCodeAsync(request.Url, lifetimeHours);
     var baseUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}";
     var shortUrl = $"{baseUrl}/{code}";
 
