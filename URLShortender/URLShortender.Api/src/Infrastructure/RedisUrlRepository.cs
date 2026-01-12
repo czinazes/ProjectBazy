@@ -15,10 +15,11 @@ public class RedisUrlRepository
 
     public Task SaveUrlAsync(string Code, string Url, TimeSpan? ttl)
     {
+        Expiration expiry = ttl.HasValue ? new Expiration(ttl.Value) : default;
         var tasks = new Task[]
         {
-            _dataBase.StringSetAsync(UrlKey(Code), Url, expiry: ttl),
-            _dataBase.StringSetAsync(ClickKey(Code), 0, expiry: ttl)
+            _dataBase.StringSetAsync(UrlKey(Code), Url, expiry: expiry),
+            _dataBase.StringSetAsync(ClickKey(Code), 0, expiry: expiry)
         };
         return Task.WhenAll(tasks);
     }
