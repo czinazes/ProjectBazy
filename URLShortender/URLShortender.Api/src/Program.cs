@@ -18,7 +18,11 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(serviceProvider =>
     });
 
 builder.Services.AddSingleton<RedisUrlRepository>();
+builder.Services.AddSingleton<UserRepository>();
+builder.Services.AddSingleton<UserLinkRepository>();
+builder.Services.AddSingleton<TokenRepository>();
 builder.Services.AddScoped<IURLService,URLService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); 
@@ -44,9 +48,12 @@ app.UseCors();
 
 app.MapGet("/", () => "URL Shortener API działa 🚀");
 
-app.MapPost("/api/shortender", async (
+app.MapPost("/api/links/shorten", async (
     ShortenRequest request,
     IURLService urlService,
+    IAuthService authService,
+    UserLinkRepository userLinkRepository,
+    RedisUrlRepository redisUrlRepository,
     HttpContext httpContext) =>
 {
     if (String.IsNullOrWhiteSpace(request.Url))
@@ -59,15 +66,44 @@ app.MapPost("/api/shortender", async (
         return Results.BadRequest(new { error = "Url is invalid" });
     }
 
-    var code = await urlService.CreateShortCodeAsync(request.Url);
+    var lifetimeHours = request.LifetimeHours ?? 24;
+    if (lifetimeHours < 1 || lifetimeHours > 72)
+    {
+        return Results.BadRequest(new { error = "Lifetime must be between 1 and 72 hours" });
+    }
+
+    var code = await urlService.CreateShortCodeAsync(request.Url, lifetimeHours);
     var baseUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}";
     var shortUrl = $"{baseUrl}/{code}";
+    var createdAt = DateTimeOffset.UtcNow;
+    var expiresAt = createdAt.AddHours(lifetimeHours);
 
     var response = new ShortenResponse
     {
         ShortCode = code,
-        ShortUrl = shortUrl
+        ShortUrl = shortUrl,
+        ExpiresAt = expiresAt
     };
+
+    var token = GetToken(httpContext);
+    if (!string.IsNullOrWhiteSpace(token))
+    {
+        var user = await authService.GetUserByTokenAsync(token);
+        if (user == null)
+        {
+            return Results.Unauthorized();
+        }
+
+        await userLinkRepository.AddLinkAsync(user.Id, new LinkRecord
+        {
+            ShortCode = code,
+            ShortUrl = shortUrl,
+            OriginalUrl = request.Url,
+            CreatedAt = createdAt,
+            ExpiresAt = expiresAt
+        });
+    }
+
     return Results.Ok(response);
 });
 
@@ -81,7 +117,7 @@ app.MapGet("/{code}", async (string code, IURLService urlService) =>
     return Results.Redirect(url, permanent:false);
 });
 
-app.MapGet("/api/stats/{code}", async (string code, IURLService urlService) =>
+app.MapGet("/api/links/stats/{code}", async (string code, IURLService urlService) =>
 {
     var url = await urlService.GetOriginalUrlAsync(code, incrementClicks: false);
     if (url == null)
@@ -97,5 +133,98 @@ app.MapGet("/api/stats/{code}", async (string code, IURLService urlService) =>
         clicks
     });
 });
-    
+
+app.MapPost("/api/users/register", async (RegisterRequest request, IAuthService authService) =>
+{
+    var result = await authService.RegisterAsync(request);
+    if (!result.Success)
+    {
+        return Results.BadRequest(new { error = result.Error });
+    }
+
+    return Results.Ok(result.Response);
+});
+
+app.MapPost("/api/users/login", async (LoginRequest request, IAuthService authService) =>
+{
+    var result = await authService.LoginAsync(request);
+    if (!result.Success)
+    {
+        return Results.BadRequest(new { error = result.Error });
+    }
+
+    return Results.Ok(result.Response);
+});
+
+app.MapGet("/api/users/profile", async (IAuthService authService, HttpContext httpContext) =>
+{
+    var token = GetToken(httpContext);
+    var user = await authService.GetUserByTokenAsync(token);
+    if (user == null)
+    {
+        return Results.Unauthorized();
+    }
+
+    return Results.Ok(new AuthUser
+    {
+        Id = user.Id,
+        Name = user.Name,
+        Email = user.Email
+    });
+});
+
+app.MapPut("/api/users/profile", async (UpdateProfileRequest request, IAuthService authService, HttpContext httpContext) =>
+{
+    var token = GetToken(httpContext);
+    var result = await authService.UpdateProfileAsync(token, request);
+    if (!result.Success)
+    {
+        return Results.BadRequest(new { error = result.Error });
+    }
+
+    return Results.Ok(result.Response);
+});
+
+app.MapGet("/api/users/links", async (
+    IAuthService authService,
+    UserLinkRepository userLinkRepository,
+    RedisUrlRepository redisUrlRepository,
+    HttpContext httpContext) =>
+{
+    var token = GetToken(httpContext);
+    var user = await authService.GetUserByTokenAsync(token);
+    if (user == null)
+    {
+        return Results.Unauthorized();
+    }
+
+    var links = await userLinkRepository.GetLinksAsync(user.Id);
+    var activeLinks = new List<LinkRecord>();
+    foreach (var link in links)
+    {
+        if (await redisUrlRepository.UrlExistsAsync(link.ShortCode))
+        {
+            activeLinks.Add(link);
+        }
+    }
+
+    return Results.Ok(activeLinks);
+});
+
 app.Run();
+
+static string GetToken(HttpContext httpContext)
+{
+    if (!httpContext.Request.Headers.TryGetValue("Authorization", out var header))
+    {
+        return string.Empty;
+    }
+
+    var value = header.ToString();
+    if (value.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+    {
+        return value["Bearer ".Length..].Trim();
+    }
+
+    return value.Trim();
+}

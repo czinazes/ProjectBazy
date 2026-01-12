@@ -13,10 +13,15 @@ public class URLService : IURLService
     {
         _redisUrlRepository = redisUrlRepository;
     }
-    public async Task<string> CreateShortCodeAsync(string url)
+    public async Task<string> CreateShortCodeAsync(string url, int? lifetimeHours)
     {
         var code = GenerateCode(url);
-        await _redisUrlRepository.SaveUrlAsync(code, url);
+        TimeSpan? ttl = null;
+        if (lifetimeHours.HasValue)
+        {
+            ttl = TimeSpan.FromHours(lifetimeHours.Value);
+        }
+        await _redisUrlRepository.SaveUrlAsync(code, url, ttl);
         return code;
     }
 
