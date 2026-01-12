@@ -73,48 +73,50 @@ const ShortenerPage = () => {
         </div>
       </section>
 
-      <section className="panel">
-        <h2 className="section-title">Skróć link</h2>
-        <TextSubmit
-          title={null}
-          value={url}
-          onChange={setUrl}
-          onSubmit={handleShorten}
-          loading={loading}
-          placeholder="Wklej długi adres URL"
-          error={error}
-          buttonText="Skróć"
-        >
-          <label className="field">
-            <span>Czas życia</span>
-            <select
-              className="select-field"
-              value={lifetimeHours}
-              onChange={(e) => setLifetimeHours(Number(e.target.value))}
-            >
-              <option value={24}>1 dzień</option>
-              <option value={48}>2 dni</option>
-              <option value={72}>3 dni</option>
-            </select>
-          </label>
-        </TextSubmit>
-        <ShortResult data={result} />
-      </section>
+      <div className="shortener-layout">
+        <section className="panel shorten-panel">
+          <h2 className="section-title">Skróć link</h2>
+          <TextSubmit
+            title={null}
+            value={url}
+            onChange={setUrl}
+            onSubmit={handleShorten}
+            loading={loading}
+            placeholder="Wklej długi adres URL"
+            error={error}
+            buttonText="Skróć"
+          >
+            <label className="field">
+              <span>Czas życia</span>
+              <select
+                className="select-field"
+                value={lifetimeHours}
+                onChange={(e) => setLifetimeHours(Number(e.target.value))}
+              >
+                <option value={24}>1 dzień</option>
+                <option value={48}>2 dni</option>
+                <option value={72}>3 dni</option>
+              </select>
+            </label>
+          </TextSubmit>
+          <ShortResult data={result} />
+        </section>
 
-      <section className="panel">
-        <h2 className="section-title">Statystyki</h2>
-        <TextSubmit
-          title={null}
-          value={code}
-          onChange={setCode}
-          onSubmit={handleStats}
-          loading={loading}
-          placeholder="Wpisz kod linku"
-          error={error}
-          buttonText="Sprawdź"
-        />
-        <StatsResult data={stats} />
-      </section>
+        <section className="panel stats-panel">
+          <h2 className="section-title">Statystyki</h2>
+          <TextSubmit
+            title={null}
+            value={code}
+            onChange={setCode}
+            onSubmit={handleStats}
+            loading={loading}
+            placeholder="Wpisz kod linku"
+            error={error}
+            buttonText="Sprawdź"
+          />
+          <StatsResult data={stats} />
+        </section>
+      </div>
     </div>
   );
 };

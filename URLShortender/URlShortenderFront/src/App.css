@@ -77,6 +77,27 @@
   align-items: start;
 }
 
+.shortener-layout {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(360px, 1.3fr) minmax(280px, 0.7fr);
+  gap: 2rem;
+  align-items: start;
+}
+
+.shorten-panel {
+  min-height: 420px;
+}
+
+.stats-panel {
+  min-height: 360px;
+}
+
+.stats-panel .card-ui,
+.shorten-panel .card-ui {
+  background: #ffffff;
+}
+
 .hero-card {
   grid-column: 1 / -1;
   background: linear-gradient(135deg, #1d4ed8, #7c3aed);
@@ -330,5 +351,9 @@
 
   .user-chip {
     align-self: flex-end;
+  }
+
+  .shortener-layout {
+    grid-template-columns: 1fr;
   }
 }
